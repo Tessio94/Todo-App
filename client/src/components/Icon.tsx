@@ -1,4 +1,10 @@
-const Icon = ({ iconType, checked }) => {
+const Icon = ({
+  iconType,
+  checked,
+}: {
+  iconType: string;
+  checked?: boolean;
+}) => {
   if (iconType === "check") {
     return checked ? (
       <svg

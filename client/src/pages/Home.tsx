@@ -5,13 +5,13 @@ import { useTodos } from "../context";
 
 const Home = () => {
   const [task, setTask] = useState("");
-  const { todos, setTodos, updateTodo } = useTodos();
+  const { todos, setTodos } = useTodos();
 
-  async function onHandleSubmit(e) {
+  async function onHandleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (task.trim()) {
       try {
-        const response = await fetch(`http://localhost:5001/`, {
+        const response = await fetch(`https://todo-app-as64.onrender.com/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

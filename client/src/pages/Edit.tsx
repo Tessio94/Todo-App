@@ -6,22 +6,25 @@ import Task from "../components/Task.tsx";
 
 const Edit = () => {
   const { id } = useParams();
-  const { todos, setTodos, updateTodo } = useTodos();
-  const taskToEdit = todos.find((todo) => todo.todo_id === +id)?.description;
+  const { todos, updateTodo } = useTodos();
+  const taskToEdit = todos.find((todo) => todo.todo_id === +id!)?.description;
   const [editTodo, setEditTodo] = useState(taskToEdit || "");
   // console.log(editTodo);
 
-  async function onHandleSubmit(e) {
+  async function onHandleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (editTodo.trim()) {
       try {
-        const response = await fetch(`http://localhost:5001/edit/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            description: editTodo,
-          }),
-        });
+        const response = await fetch(
+          `https://todo-app-as64.onrender.com/edit/${id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              description: editTodo,
+            }),
+          }
+        );
         const data = await response.json();
         updateTodo(data);
         console.log(data);
@@ -58,7 +61,7 @@ const Edit = () => {
         </form>
         <div className="w-full mt-6 mb-10">
           {todos.map((todo, index) =>
-            todo.todo_id === +id ? (
+            todo.todo_id === +id! ? (
               <Task
                 key={todo.todo_id}
                 index={index}

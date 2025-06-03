@@ -1,10 +1,18 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
 import { useTodos } from "../context";
 
-const Task = ({ index, id, description, done, type }) => {
-  const [check, setCheck] = useState(done);
+type TaskProps = {
+  index: number;
+  id: number;
+  description: string;
+  done: boolean;
+  type: "add" | string;
+};
+
+const Task = ({ index, id, description, done, type }: TaskProps) => {
+  const [check, setCheck] = useState<boolean>(done);
   const { updateTodo, deleteTodo } = useTodos();
 
   async function handleCheck() {
@@ -12,7 +20,7 @@ const Task = ({ index, id, description, done, type }) => {
       const updatedCheck = !check;
       setCheck((check) => !check);
 
-      const response = await fetch("http://localhost:5001/", {
+      const response = await fetch("https://todo-app-as64.onrender.com/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +41,7 @@ const Task = ({ index, id, description, done, type }) => {
 
   async function handleDelete() {
     try {
-      const response = await fetch("http://localhost:5001/", {
+      const response = await fetch("https://todo-app-as64.onrender.com/", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
