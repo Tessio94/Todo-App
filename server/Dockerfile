@@ -12,7 +12,6 @@ RUN npm ci --only=production
 FROM base AS runtime
 
 # Create non-root user
-RUN addgroup -S nodegroup && adduser -S node -G nodegroup
 USER node
 
 ENV NODE_ENV=production
