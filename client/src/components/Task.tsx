@@ -11,6 +11,8 @@ type TaskProps = {
 	type: "add" | string;
 };
 
+const prodUrl = import.meta.env.VITE_URL_PRODUCTION;
+
 const Task = ({ index, id, description, done, type }: TaskProps) => {
 	const [check, setCheck] = useState<boolean>(done);
 	const { updateTodo, deleteTodo } = useTodos();
@@ -20,7 +22,7 @@ const Task = ({ index, id, description, done, type }: TaskProps) => {
 			const updatedCheck = !check;
 			setCheck((check) => !check);
 
-			const response = await fetch("https://api.app1.tessio94.com/", {
+			const response = await fetch(`${prodUrl}/api`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -29,6 +31,7 @@ const Task = ({ index, id, description, done, type }: TaskProps) => {
 					id,
 					done: updatedCheck,
 				}),
+				credentials: "include",
 			});
 			const data = await response.json();
 			// console.log(data);
@@ -41,7 +44,7 @@ const Task = ({ index, id, description, done, type }: TaskProps) => {
 
 	async function handleDelete() {
 		try {
-			const response = await fetch("https://api.app1.tessio94.com/", {
+			const response = await fetch(`${prodUrl}/api`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
@@ -49,6 +52,7 @@ const Task = ({ index, id, description, done, type }: TaskProps) => {
 				body: JSON.stringify({
 					id,
 				}),
+				credentials: "include",
 			});
 			const data = await response.json();
 			console.log(data);

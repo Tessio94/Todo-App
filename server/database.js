@@ -5,7 +5,7 @@ require("dotenv").config();
 const password = process.env.SIMEPSSW;
 
 const pool = new Pool({
-	host: "db1",
+	host: "localhost",
 	user: "postgres",
 	database: "perntodo",
 	password: password,
