@@ -1,19 +1,33 @@
 import { useState } from "react";
 import { useTodos } from "../context";
 import { useNavigate, Link } from "react-router";
+import { toast } from "sonner";
 
 export default function Login() {
 	const { login } = useTodos();
-	const nav = useNavigate();
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 
-		const success = await login(email, password);
-		if (success) nav("/");
-		else alert("Invalid credentials");
+		const { loginResult, message } = await login(email, password);
+
+		if (loginResult) {
+			toast.success(message);
+			navigate("/");
+		} else {
+			toast.error(
+				<ul className="list-disc ml-4">
+					{Array.isArray(message) ? (
+						message.map((msg: string, i) => <li key={i}>{msg}</li>)
+					) : (
+						<li>{message}</li>
+					)}
+				</ul>
+			);
+		}
 	}
 
 	return (
@@ -30,6 +44,7 @@ export default function Login() {
 					className="border p-2 rounded"
 					type="email"
 					placeholder="Email..."
+					autoComplete="email"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 				/>
@@ -38,6 +53,7 @@ export default function Login() {
 					className="border p-2 rounded"
 					type="password"
 					placeholder="Password..."
+					autoComplete="current-password"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 				/>

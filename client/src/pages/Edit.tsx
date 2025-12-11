@@ -11,7 +11,6 @@ const Edit = () => {
 	const { todos, updateTodo } = useTodos();
 	const taskToEdit = todos.find((todo) => todo.todo_id === +id!)?.description;
 	const [editTodo, setEditTodo] = useState(taskToEdit || "");
-	// console.log(editTodo);
 
 	async function onHandleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -27,7 +26,6 @@ const Edit = () => {
 				});
 				const data = await response.json();
 				updateTodo(data);
-				console.log(data);
 			} catch (error) {
 				console.log(error);
 			}
@@ -36,17 +34,14 @@ const Edit = () => {
 
 	return (
 		<>
-			<main className="relative w-[50%] min-w-[400px] mx-auto">
+			<main className="w-full relative sm:w-[50%] sm:min-w-[400px] sm:mx-auto grow max-sm:px-3 z-20">
 				<form className="relative" onSubmit={onHandleSubmit}>
 					<div className="flex flex-col mt-5 gap-4 text-center">
-						<label htmlFor="task" className="text-xl text-purple-600 font-bold">
-							Edit your task here:
-						</label>
 						<input
 							type="text"
 							name="task"
 							id="task"
-							className="outline-none border-none text-purple-600 rounded-l-xl py-2 px-10 w-[calc(100%-120px)]   placeholder:text-xl placeholder:text-purple-400"
+							className="outline-none border-none text-purple-600 rounded-l-xl py-2 px-3 sm:px-10 w-[calc(100%-120px)] placeholder:text-lg  sm:placeholder:text-xl input-style placeholder:text-purple-400"
 							placeholder="Edit your text here..."
 							value={editTodo}
 							onChange={(e) => setEditTodo(e.target.value)}
@@ -75,8 +70,8 @@ const Edit = () => {
 						)
 					)}
 				</div>
+				<ReturnButton />
 			</main>
-			<ReturnButton />
 		</>
 	);
 };

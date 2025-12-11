@@ -1,13 +1,13 @@
-// import { useEffect, useState } from "react";
 import { useState } from "react";
 import Task from "../components/Task";
 import { useTodos } from "../context";
+import LogoutButton from "../components/LogoutButton";
 
 const prodUrl = import.meta.env.VITE_URL_PRODUCTION;
 
 const Home = () => {
 	const [task, setTask] = useState("");
-	const { todos, setTodos } = useTodos();
+	const { user, todos, setTodos } = useTodos();
 
 	async function onHandleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -19,9 +19,11 @@ const Home = () => {
 					body: JSON.stringify({
 						description: task,
 						done: false,
+						user_id: user!.id,
 					}),
 					credentials: "include",
 				});
+
 				const data = await response.json();
 
 				setTodos((prevTodos) => [...prevTodos, data]);
@@ -33,17 +35,14 @@ const Home = () => {
 	}
 
 	return (
-		<main className="w-[50%] min-w-[400px] mx-auto min-h-screen">
+		<main className="w-full sm:w-[50%] sm:min-w-[400px] sm:mx-auto grow max-sm:px-3 z-20">
 			<form className="relative" onSubmit={onHandleSubmit}>
 				<div className="flex flex-col mt-5 gap-4 text-center">
-					<label htmlFor="task" className="text-xl text-purple-600 font-bold">
-						Write your next task:
-					</label>
 					<input
 						type="text"
 						name="task"
 						id="task"
-						className="outline-none border-none text-purple-600 rounded-l-xl py-2 px-10 w-[calc(100%-120px)] input-style placeholder:text-xl placeholder:text-purple-400"
+						className="outline-none border-none text-purple-600 rounded-l-xl py-2 px-3 sm:px-10 w-[calc(100%-120px)] input-style placeholder:text-lg sm:placeholder:text-xl placeholder:text-purple-400"
 						placeholder="Write your text here..."
 						value={task}
 						onChange={(e) => setTask(e.target.value)}
@@ -58,7 +57,7 @@ const Home = () => {
 			</form>
 
 			{
-				<div className="flex flex-col w-full mt-6 mb-10 gap-5">
+				<div className="flex flex-col w-full mt-6 mb-10 gap-5 max-h-[500px] overflow-y-scroll">
 					{todos.map((todo, index) => {
 						const { todo_id, description, done } = todo;
 
@@ -75,6 +74,7 @@ const Home = () => {
 					})}
 				</div>
 			}
+			<LogoutButton />
 		</main>
 	);
 };

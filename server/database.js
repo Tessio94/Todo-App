@@ -5,7 +5,7 @@ require("dotenv").config();
 const password = process.env.SIMEPSSW;
 
 const pool = new Pool({
-	host: "localhost",
+	host: "db1",
 	user: "postgres",
 	database: "perntodo",
 	password: password,
@@ -13,14 +13,5 @@ const pool = new Pool({
 	idleTimeoutMillis: 30000,
 	connectionTimeoutMillis: 2000,
 });
-
-// const password = process.env.DATABASE_URL_PROD;
-
-// const pool = new Pool({
-// 	connectionString: password,
-// 	ssl: {
-// 		rejectUnauthorized: false,
-// 	},
-// });
 
 module.exports = pool;

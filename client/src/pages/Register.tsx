@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useTodos } from "../context";
+import { toast } from "sonner";
+import { z } from "zod";
+
+export const RegisterSchema = z.object({
+	email: z.email(),
+	password: z.string().min(6),
+});
 
 const Register = () => {
 	const { register } = useTodos();
@@ -11,9 +18,21 @@ const Register = () => {
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 
-		const success = await register(email, password);
-		if (success) navigate("/login");
-		else alert("Registration failed");
+		const { registerResult, message } = await register(email, password);
+		if (registerResult) {
+			toast.success(message);
+			navigate("/login");
+		} else {
+			toast.error(
+				<ul className="list-disc ml-4">
+					{Array.isArray(message) ? (
+						message.map((msg: string, i) => <li key={i}>{msg}</li>)
+					) : (
+						<li>{message}</li>
+					)}
+				</ul>
+			);
+		}
 	}
 
 	return (
@@ -30,6 +49,7 @@ const Register = () => {
 					className="border p-2 rounded"
 					type="email"
 					placeholder="Email..."
+					autoComplete="email"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 				/>
@@ -37,6 +57,7 @@ const Register = () => {
 					className="border p-2 rounded"
 					type="password"
 					placeholder="Password..."
+					autoComplete="current-password"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 				/>

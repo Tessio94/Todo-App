@@ -11,14 +11,27 @@ type User = {
 	email: string;
 };
 
+type LoginResult = {
+	loginResult: boolean;
+	message: string | string[];
+};
+
+type RegisterResult = {
+	registerResult: boolean;
+	message: string | string[];
+};
+
 type TodosContextType = {
+	user: User | undefined;
 	todos: Todo[];
 	setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 	updateTodo: (updatedTodo: Todo) => void;
 	deleteTodo: (deletedTodo: Todo) => void;
+	authLoading: boolean;
+	justLoggedIn: boolean;
 	isLoggedIn: boolean;
-	login: (email: string, password: string) => Promise<boolean>;
-	register: (email: string, password: string) => Promise<boolean>;
+	login: (email: string, password: string) => Promise<LoginResult>;
+	register: (email: string, password: string) => Promise<RegisterResult>;
 	logout: () => void;
 };
 
@@ -27,22 +40,38 @@ const TodosContext = createContext<TodosContextType | undefined>(undefined);
 const prodUrl = import.meta.env.VITE_URL_PRODUCTION;
 
 export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
+	const [user, setUser] = useState<User | undefined>();
 	const [todos, setTodos] = useState<Todo[]>([]);
+	const [justLoggedIn, setJustLoggedIn] = useState<boolean>(false);
 	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+	const [authLoading, setAuthLoading] = useState<boolean>(true);
 
 	useEffect(() => {
 		async function checkAuth() {
+			const start = Date.now();
 			try {
 				const response = await fetch(`${prodUrl}/auth/current-user`, {
 					credentials: "include",
 				});
 
-				if (response.ok) {
-					setIsLoggedIn(true);
-					fetchTodos();
-				}
+				if (!response.ok) throw new Error("Failed to find logged in user.");
+
+				const data = await response.json();
+
+				setUser(data);
+				setIsLoggedIn(true);
+				fetchTodos();
 			} catch (error) {
 				console.log(error);
+			} finally {
+				const elapsed = Date.now() - start;
+				const extra = 1500 - elapsed;
+
+				if (extra > 0) {
+					await new Promise((res) => setTimeout(res, extra));
+				}
+
+				setAuthLoading(false);
 			}
 		}
 		checkAuth();
@@ -67,30 +96,83 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
 	}
 
 	const login = async (email: string, password: string) => {
-		const res = await fetch(`${prodUrl}/auth/login`, {
-			method: "POST",
-			credentials: "include",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password }),
-		});
+		const start = Date.now();
+		setAuthLoading(true);
+		try {
+			const res = await fetch(`${prodUrl}/auth/login`, {
+				method: "POST",
+				credentials: "include",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
 
-		if (res.ok) {
+			const data = await res.json();
+
+			if (!res.ok) {
+				setAuthLoading(false);
+				if (Array.isArray(data.error)) {
+					return {
+						loginResult: false,
+						message: data.error,
+					};
+				}
+
+				throw new Error(data.error || "Unkown error");
+			}
+			setJustLoggedIn(true);
 			setIsLoggedIn(true);
-			fetchTodos();
-			return true;
+			await fetchTodos();
+			const elapsed = Date.now() - start;
+			const extra = 1500 - elapsed;
+
+			if (extra > 0) {
+				await new Promise((res) => setTimeout(res, extra));
+			}
+			setAuthLoading(false);
+			return {
+				loginResult: true,
+				message: "Successful login!",
+			};
+		} catch (error) {
+			setAuthLoading(false);
+			return {
+				loginResult: false,
+				message: error instanceof Error ? error.message : "Unknown error",
+			};
 		}
-		return false;
 	};
 
 	const register = async (email: string, password: string) => {
-		const res = await fetch(`${prodUrl}/auth/register`, {
-			method: "POST",
-			credentials: "include",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password }),
-		});
+		try {
+			const res = await fetch(`${prodUrl}/auth/register`, {
+				method: "POST",
+				credentials: "include",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
 
-		return res.ok;
+			const data = await res.json();
+
+			if (!res.ok) {
+				if (Array.isArray(data.error)) {
+					return {
+						registerResult: false,
+						message: data.error,
+					};
+				}
+				throw new Error(data.error || "Unkown error");
+			}
+
+			return {
+				registerResult: true,
+				message: "Successful registration!",
+			};
+		} catch (error) {
+			return {
+				registerResult: false,
+				message: error instanceof Error ? error.message : "Unknown error",
+			};
+		}
 	};
 
 	const logout = () => {
@@ -119,10 +201,13 @@ export const TodosProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<TodosContext.Provider
 			value={{
+				user,
 				todos,
 				setTodos,
 				updateTodo,
 				deleteTodo,
+				authLoading,
+				justLoggedIn,
 				isLoggedIn,
 				login,
 				register,

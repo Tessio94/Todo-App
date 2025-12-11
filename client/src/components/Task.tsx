@@ -34,8 +34,7 @@ const Task = ({ index, id, description, done, type }: TaskProps) => {
 				credentials: "include",
 			});
 			const data = await response.json();
-			// console.log(data);
-			// console.log(`done: ${done}`);
+
 			updateTodo(data);
 		} catch (error) {
 			console.log(error);
@@ -55,20 +54,17 @@ const Task = ({ index, id, description, done, type }: TaskProps) => {
 				credentials: "include",
 			});
 			const data = await response.json();
-			console.log(data);
-			// console.log(`done: ${done}`);
+
 			deleteTodo(data);
 		} catch (error) {
 			console.log(error);
 		}
 	}
 
-	// console.log(`Done: ${done}`);
-
 	return (
 		<div className="max-w-full w-full flex  items-center justify-between gap-5 border-purple-600 border-2 rounded-xl py-1 px-3 bg-slate-200 shadow-lg hover:shadow-xl hover:bg-slate-300 transition-all duration-300">
 			<p
-				className={`text-purple-600 text-xl flex items-end gap-5 overflow-auto py-1 ${
+				className={`text-purple-600 text-xl flex items-end text-nowrap gap-5 overflow-auto py-1 ${
 					check ? "line-through" : ""
 				}`}
 			>
