@@ -1,6 +1,8 @@
 # build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
+ARG VITE_URL_PRODUCTION
+ENV VITE_URL_PRODUCTION=$VITE_URL_PRODUCTION
 ENV CI=true
 COPY package*.json ./
 COPY pnpm-lock.yaml* ./

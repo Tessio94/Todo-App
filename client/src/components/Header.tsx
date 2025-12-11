@@ -2,7 +2,7 @@ const Header = () => {
 	return (
 		<header className="bg-gradient-to-b from-purple-600/40 to-transparent w-full">
 			<div className="mt-[6rem] text-center max-sm:px-5 mx-auto flex items-start max-[456px]:flex-col max-[456px]:items-center gap-5 w-fit">
-				<p className="relative  lg:text-5xl text-3xl font-bold text-purple-600 text-center">
+				<p className="relative lg:text-5xl text-3xl font-bold text-purple-600 text-center">
 					Welcome to my <span className="text-orange-600">ToDo</span> app
 				</p>
 				<svg
