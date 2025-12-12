@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTodos } from "../context";
 import { useNavigate, Link } from "react-router";
 import { toast } from "sonner";
-import LinearBackground from "../components/LinearBackground";
 
 export default function Login() {
 	const { login } = useTodos();
