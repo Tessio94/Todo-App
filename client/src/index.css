@@ -8,11 +8,11 @@ body {
 
   /* background-color: rgb(238, 241, 243); */
   background: linear-gradient(to right bottom, rgb(238, 241, 243), #9233ea28);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 #root {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
