@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { useTodos } from "../context";
 import { toast } from "sonner";
 import { PropagateLoader } from "react-spinners";
+import Pipe from "../components/Pipe";
 
 const PublicLayout = () => {
 	const { authLoading, isLoggedIn, justLoggedIn } = useTodos();
@@ -22,6 +23,7 @@ const PublicLayout = () => {
 	return (
 		<>
 			<Header />
+			<Pipe />
 			<Outlet />
 			<Footer />
 		</>

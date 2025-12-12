@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTodos } from "../context";
 import { useNavigate, Link } from "react-router";
 import { toast } from "sonner";
+import LinearBackground from "../components/LinearBackground";
 
 export default function Login() {
 	const { login } = useTodos();
@@ -31,7 +32,7 @@ export default function Login() {
 	}
 
 	return (
-		<main className="flex justify-center items-center max-sm:px-5 max-w-full grow z-10">
+		<main className="flex justify-center items-center max-sm:px-5 max-w-full grow z-50">
 			<form
 				onSubmit={handleSubmit}
 				className="flex flex-col p-8 rounded-xl shadow-md bg-white gap-4 w-[350px]"

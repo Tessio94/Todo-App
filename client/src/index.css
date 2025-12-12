@@ -18,6 +18,8 @@ body {
 	align-items: center;
 	justify-content: center;
 	width: 100%;
+	max-width: 100vw;
+	overflow-x: hidden;
 }
 
 .custom-button::after {
@@ -62,4 +64,30 @@ input:-webkit-autofill:focus {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
 	background: rgb(192 132 252);
+}
+
+@keyframes slideMask {
+	from {
+		x: -100%;
+	}
+	to {
+		x: 100%;
+	}
+}
+
+.mask-rect {
+	animation: slideMask 3s ease infinite;
+}
+
+@keyframes slideMaskRight {
+	from {
+		x: 300%;
+	}
+	to {
+		x: -100%;
+	}
+}
+
+.mask-rect-right {
+	animation: slideMaskRight 3s ease infinite;
 }
